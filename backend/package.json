@@ -49,5 +49,8 @@
     "rootDir": "src",
     "testRegex": ".spec.js$",
     "coverageDirectory": "../coverage"
+  },
+  "prisma": {
+    "seed": "prisma/seed.js"
   }
 }
