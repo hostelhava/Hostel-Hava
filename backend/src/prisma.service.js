@@ -1,11 +1,9 @@
-const { PrismaClient } = require('@prisma/client')
-const { Injectable } = require('@nestjs/common')
+import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-class PrismaService extends PrismaClient {
+export class PrismaService extends PrismaClient {
     async onModuleInit() {
-        await this.$connect()
+        await this.$connect();
     }
 }
-
-module.exports = { PrismaService }
