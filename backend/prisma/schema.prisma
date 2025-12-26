@@ -1,0 +1,45 @@
+// This is your data model definition
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Resident {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String
+  bedId     String?  @unique
+  bed       Bed?     @relation(fields: [bedId], references: [id])
+  tickets   Ticket[]
+  payments  Payment[]
+  createdAt DateTime @default(now())
+}
+
+model Bed {
+  id       String    @id @default(uuid())
+  number   String    // e.g., "101-A"
+  status   String    @default("VACANT") // VACANT, OCCUPIED, MAINTENANCE
+  resident Resident?
+}
+
+model Ticket {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  residentId  String
+  resident    Resident @relation(fields: [residentId], references: [id])
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  amount     Float
+  date       DateTime @default(now())
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+}
