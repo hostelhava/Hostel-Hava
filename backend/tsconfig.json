@@ -9,6 +9,6 @@
         "noEmit": true
     },
     "include": [
-        "prisma.config.ts"
+        "prisma.config.js"
     ]
 }

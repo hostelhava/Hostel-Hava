@@ -1,14 +1,11 @@
-import { Controller, Post, Request, UnauthorizedException, Bind } from '@nestjs/common';
+import { Controller, Post, Request, UnauthorizedException, Bind, Dependencies } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
+@Dependencies(AuthService)
 export class AuthController {
     constructor(authService) {
         this.authService = authService;
-    }
-
-    static get parameters() {
-        return [AuthService];
     }
 
     @Post('login')

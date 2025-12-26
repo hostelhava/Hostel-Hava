@@ -1,17 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Dependencies } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
+@Dependencies(PrismaService, JwtService)
 export class AuthService {
     constructor(prisma, jwtService) {
         this.prisma = prisma;
         this.jwtService = jwtService;
-    }
-
-    static get parameters() {
-        return [PrismaService, JwtService];
     }
 
     async validateAdmin(email, password) {
