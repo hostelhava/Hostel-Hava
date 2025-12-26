@@ -1,13 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 require('dotenv').config();
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: process.env.DATABASE_URL,
-        },
-    },
-});
+const prisma = new PrismaClient({});
 async function main() {
     const hashedPassword = await bcrypt.hash("admin123", 10);
     const admin = await prisma.admin.upsert({
