@@ -1,7 +1,6 @@
 // This is your data model definition
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
