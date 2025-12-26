@@ -7,10 +7,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Admin {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
 model Resident {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  password  String
   phone     String
   bedId     String?  @unique
   bed       Bed?     @relation(fields: [bedId], references: [id])
@@ -19,11 +28,21 @@ model Resident {
   createdAt DateTime @default(now())
 }
 
+model Room {
+  id        String   @id @default(uuid())
+  number    String   @unique // e.g., "101"
+  floor     Int
+  type      String   @default("STANDARD") // AC, NON_AC, DELUXE
+  beds      Bed[]
+}
+
 model Bed {
-  id       String    @id @default(uuid())
-  number   String    // e.g., "101-A"
-  status   String    @default("VACANT") // VACANT, OCCUPIED, MAINTENANCE
-  resident Resident?
+  id         String    @id @default(uuid())
+  number     String    // e.g., "A", "B"
+  status     String    @default("VACANT") // VACANT, OCCUPIED
+  roomId     String
+  room       Room      @relation(fields: [roomId], references: [id])
+  resident   Resident?
 }
 
 model Ticket {
@@ -31,14 +50,25 @@ model Ticket {
   title       String
   description String
   status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
   residentId  String
   resident    Resident @relation(fields: [residentId], references: [id])
+  createdAt   DateTime @default(now())
 }
 
 model Payment {
   id         String   @id @default(uuid())
   amount     Float
+  status     String   @default("PENDING") // PENDING, COMPLETED, FAILED
   date       DateTime @default(now())
   residentId String
   resident   Resident @relation(fields: [residentId], references: [id])
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  category  String   @default("GENERAL") // GENERAL, EMERGENCY, EVENT
+  createdAt DateTime @default(now())
 }
