@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Loader2, ArrowRight, Lock, Mail, ChevronRight, Activity } from 'lucide-react';
 import api from '@/lib/api';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -12,7 +12,6 @@ export default function AdminLogin() {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,85 +22,115 @@ export default function AdminLogin() {
             const { access_token } = response.data;
 
             localStorage.setItem('admin_token', access_token);
-            toast.success('Identity Verified');
+            toast.success('Access Granted');
 
             setTimeout(() => {
                 router.push('/admin/dashboard');
             }, 500);
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Unauthorized Access');
+            toast.error(error.response?.data?.message || 'Access Denied');
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 font-sans">
-            <Toaster position="top-right" />
+        <div className="min-h-screen flex items-center justify-center bg-black font-sans selection:bg-purple-500/30 overflow-hidden relative">
+            {/* Cinematic Background Elements */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[150px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/10 blur-[150px] rounded-full" />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 brightness-50 contrast-150" />
+            </div>
 
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="w-full max-w-md"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="w-full max-w-[460px] px-6 relative z-10"
             >
-                <div className="bg-white border border-gray-200 p-10 rounded-3xl shadow-xl">
-                    <div className="flex flex-col items-center mb-10">
-                        <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-200">
-                            <ShieldCheck className="w-7 h-7 text-white" />
-                        </div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Admin Login</h1>
-                        <p className="text-gray-500 mt-2 text-sm text-center">Enter your details to manage the portal</p>
-                    </div>
+                {/* Logo & Header */}
+                <div className="text-center mb-12 flex flex-col items-center">
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
-                            <input
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm font-medium"
-                                placeholder="admin@hostel.com"
-                            />
-                        </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Password</label>
-                            <input
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm font-medium"
-                                placeholder="••••••••"
-                            />
+                    <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-2">
+                        Command Terminal
+                    </h1>
+                    <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[4px] flex items-center gap-2">
+                        <Activity className="w-3 h-3 text-purple-500" />
+                        Secure <span className="text-white">NeSt</span> Authentication
+                    </p>
+                </div>
+
+                <div className="bg-[#111111] border border-white/5 rounded-[48px] p-8 md:p-12 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-[60px] -mr-16 -mt-16 pointer-events-none" />
+
+                    <form onSubmit={handleLogin} className="space-y-8">
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-gray-700 uppercase tracking-[3px] ml-1">Identity Code</label>
+                            <div className="relative group">
+                                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-purple-400 transition-colors" />
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full pl-14 pr-6 py-5 bg-black border border-white/5 rounded-[24px] focus:border-purple-500/30 outline-none transition-all text-xs font-black text-white placeholder:text-gray-800 shadow-2xl"
+                                    placeholder="ADMIN@NEST.IO"
+                                />
+                            </div>
                         </div>
 
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full py-4 bg-gray-900 hover:bg-black text-white text-base font-bold rounded-2xl transition-all shadow-xl shadow-black/10 flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
-                        >
-                            {isLoading ? (
-                                <Loader2 className="w-6 h-6 animate-spin" />
-                            ) : (
-                                <>
-                                    Enter Dashboard
-                                    <ArrowRight className="w-5 h-5" />
-                                </>
-                            )}
-                        </motion.button>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center ml-1">
+                                <label className="text-[10px] font-black text-gray-700 uppercase tracking-[3px]">Secret Hash</label>
+                                <button type="button" className="text-[9px] font-black text-gray-600 hover:text-purple-400 uppercase tracking-widest transition-colors">Emergency</button>
+                            </div>
+                            <div className="relative group">
+                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-purple-400 transition-colors" />
+                                <input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full pl-14 pr-6 py-5 bg-black border border-white/5 rounded-[24px] focus:border-purple-500/30 outline-none transition-all text-xs font-black text-white placeholder:text-gray-800 shadow-2xl"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pt-4">
+                            <motion.button
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full py-5 bg-purple-600 text-white text-[11px] font-black uppercase tracking-[2px] rounded-[24px] transition-all shadow-[0_15px_30px_-5px_rgba(139,92,246,0.3)] flex items-center justify-center gap-3 disabled:opacity-50"
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <>
+                                        AUTHORIZE ACCESS
+                                        <ArrowRight className="w-4 h-4" />
+                                    </>
+                                )}
+                            </motion.button>
+                        </div>
                     </form>
 
-                    <footer className="mt-12 pt-6 border-t border-gray-100 flex items-center justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        <span>Development Mode</span>
-                        <span>&copy; 2025 Hostel Hava</span>
-                    </footer>
+                    <div className="mt-10 flex items-center justify-center gap-6">
+                        <div className="h-[1px] flex-1 bg-white/5" />
+                        <span className="text-[9px] font-black text-gray-800 uppercase tracking-[4px]">Verified By NeSt</span>
+                        <div className="h-[1px] flex-1 bg-white/5" />
+                    </div>
                 </div>
+
+                <footer className="mt-12 text-center">
+                    <p className="text-[10px] font-black text-gray-700 uppercase tracking-[3px]">
+                        &copy; 2025 <span className="text-white">NeSt</span> <span className="mx-3 opacity-20">|</span> Unified Property Logic
+                    </p>
+                </footer>
             </motion.div>
         </div>
     );

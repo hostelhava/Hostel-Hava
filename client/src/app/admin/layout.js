@@ -10,10 +10,14 @@ import {
     CreditCard,
     Megaphone,
     LogOut,
-    ShieldCheck
+    Bell,
+    Settings as SettingsIcon,
+    CircleUser,
+    Search
 } from 'lucide-react';
 import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
@@ -21,7 +25,7 @@ const navItems = [
     { icon: Users, label: 'Residents', href: '/admin/residents' },
     { icon: Ticket, label: 'Tickets', href: '/admin/tickets' },
     { icon: CreditCard, label: 'Payments', href: '/admin/payments' },
-    { icon: Megaphone, label: 'Announcements', href: '/admin/announcements' },
+    { icon: Megaphone, label: 'Announcements', href: '/admin/announcements', badge: '+3' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -43,54 +47,125 @@ export default function AdminLayout({ children }) {
     };
 
     if (!isMounted) return null;
-    if (pathname === '/admin/login') return <>{children}</>;
 
     return (
-        <div className="min-h-screen bg-white text-gray-900 font-sans flex text-sm">
-            <Toaster position="top-right" />
+        <>
+            <Toaster position="top-center" reverseOrder={false}
+                toastOptions={{
+                    style: {
+                        background: '#111111',
+                        color: '#fff',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        fontSize: '11px',
+                        fontWeight: '900',
+                        borderRadius: '20px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        padding: '16px 24px'
+                    }
+                }}
+            />
 
-            {/* Static Sidebar */}
-            <aside className="w-64 border-r border-gray-200 bg-gray-50 flex flex-col fixed inset-y-0">
-                <div className="p-6 flex items-center gap-3 border-b border-gray-200 bg-white">
-                    <ShieldCheck className="w-5 h-5 text-indigo-600" />
-                    <span className="font-semibold text-base tracking-tight">Hostel Hava</span>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                    {navItems.map((item) => {
-                        const isActive = pathname === item.href;
-                        return (
-                            <Link key={item.href} href={item.href}>
-                                <div className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${isActive ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-100'
-                                    }`}>
-                                    <item.icon className="w-4 h-4" />
-                                    {item.label}
-                                </div>
-                            </Link>
-                        );
-                    })}
-                </nav>
-
-                <div className="p-4 border-t border-gray-200">
-                    <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            {pathname === '/admin/login' ? (
+                children
+            ) : (
+                <div className="flex h-screen bg-black text-white font-sans overflow-hidden">
+                    {/* --- FIXED SIDEBAR --- */}
+                    <aside
+                        className="w-[280px] h-full bg-black flex flex-col items-center py-6 border-r border-white/5 shrink-0 z-[100] relative shadow-[10px_0_30px_rgba(139,92,246,0.05)] overflow-hidden"
                     >
-                        <LogOut className="w-4 h-4" />
-                        Logout
-                    </button>
-                </div>
-            </aside>
+                        {/* Visual Glow behind logo */}
+                        <div className="absolute top-0 left-0 w-full h-32 bg-purple-600/10 blur-[50px] pointer-events-none" />
 
-            {/* Main Content Area */}
-            <main className="flex-1 pl-64 bg-white">
-                <header className="h-16 border-b border-gray-200 flex items-center px-8 bg-white sticky top-0 z-10">
-                    <h2 className="font-medium text-gray-500 capitalize">{pathname.split('/').pop()}</h2>
-                </header>
-                <div className="p-8 max-w-6xl">
-                    {children}
+                        {/* Logo Section */}
+                        <div className="flex items-center gap-4 mb-10 px-8 w-full relative z-10 transition-all">
+                            <div className="w-11 h-11 bg-[#111111] border border-white/10 rounded-2xl flex items-center justify-center rotate-3 shadow-lg shadow-purple-500/10 shrink-0">
+                                <span className="text-purple-500 font-black text-2xl italic">N</span>
+                            </div>
+                            <span className="font-black text-2xl tracking-tight text-white uppercase tracking-[3px]">
+                                NeSt
+                            </span>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <nav className="flex-1 flex flex-col space-y-2 w-full px-4 relative z-10">
+                            {navItems.map((item) => {
+                                const isActive = pathname === item.href;
+                                return (
+                                    <Link key={item.href} href={item.href} className="w-full">
+                                        <div className={`flex items-center gap-4 px-6 py-4 rounded-[20px] transition-all duration-300 group relative ${isActive
+                                            ? 'bg-white/5 text-white shadow-lg'
+                                            : 'text-gray-500 hover:text-purple-400 hover:bg-white/[0.02]'
+                                            }`}>
+
+                                            <item.icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-purple-400' : 'group-hover:text-purple-400'}`} />
+
+                                            <span className="font-bold text-[13px] whitespace-nowrap uppercase tracking-widest">
+                                                {item.label}
+                                            </span>
+
+                                            {item.badge && (
+                                                <span className="ml-auto bg-purple-600 text-white text-[9px] px-2 py-0.5 rounded-full font-black shadow-lg shadow-purple-500/40">
+                                                    {item.badge}
+                                                </span>
+                                            )}
+
+                                            {/* Active Indicator Hook */}
+                                            {isActive && (
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-purple-500 rounded-r-full shadow-[0_0_15px_rgba(168,85,247,0.8)]" />
+                                            )}
+                                        </div>
+                                    </Link>
+                                )
+                            })}
+                        </nav>
+
+                        {/* Logout Button */}
+                        <div className="w-full px-4 mb-4 relative z-10">
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-4 px-6 py-4 w-full rounded-[20px] text-gray-500 hover:bg-red-500/10 hover:text-red-400 transition-all group"
+                            >
+                                <LogOut className="w-5 h-5 group-hover:text-red-400 shrink-0" />
+                                <span className="font-bold text-[13px] uppercase tracking-widest">Log Out</span>
+                            </button>
+                        </div>
+                    </aside>
+
+                    {/* --- MAIN CONTENT WRAPPER --- */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+
+                        {/* Background Blobs for Atmosphere */}
+                        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[100px] pointer-events-none" />
+                        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[80px] pointer-events-none" />
+
+                        {/* Header */}
+                        <header className="h-20 flex items-center justify-end px-10 bg-transparent shrink-0 z-10 relative">
+                            <div className="flex items-center gap-6">
+                                <div className="flex items-center gap-4 bg-[#111111] p-2 rounded-[28px] border border-white/5">
+                                    {/* <button className="p-3 text-gray-600 hover:text-purple-400 hover:bg-white/5 rounded-full transition-all relative">
+                                        <Bell className="w-5 h-5" />
+                                        <span className="absolute top-3 right-3 w-2 h-2 bg-purple-500 border-2 border-[#111111] rounded-full"></span>
+                                    </button> */}
+                                    {/* <button className="p-3 text-gray-600 hover:text-purple-400 hover:bg-white/5 rounded-full transition-all">
+                                        <SettingsIcon className="w-5 h-5" />
+                                    </button> */}
+                                    <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#1C1C1E] shadow-xl cursor-pointer ring-2 ring-purple-500/10 transition-all">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-full h-full object-cover" />
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        {/* Page Content with Independent Scrolling */}
+                        <main className="flex-1 overflow-y-auto px-10 pb-10">
+                            <div className="max-w-[1700px] mx-auto">
+                                {children}
+                            </div>
+                        </main>
+                    </div>
                 </div>
-            </main>
-        </div>
+            )}
+        </>
     );
 }
